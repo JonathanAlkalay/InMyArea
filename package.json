@@ -1,0 +1,20 @@
+{
+  "name": "inmyarea",
+  "version": "1.0.0",
+  "description": "final project for comp science degree",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node ./backend/server/server.js"
+  },
+  "author": "yonatan alkalay",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.17.3",
+    "mongodb": "^4.5.0",
+    "mongoose": "^6.2.10",
+    "node": "^17.7.2",
+    "nodeman": "^1.1.2"
+  }
+}
