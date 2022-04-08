@@ -171,8 +171,8 @@ app.get('/createAccount=:userName&:passWord&:type', (request, response) => {
         });
     }else{
         response.send({
-            "status": true, 
-            "message": "account created successfully"
+            "status": false, 
+            "message": "invalid type provided"
         });
     }
 });
