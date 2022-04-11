@@ -5,6 +5,8 @@ const userSchema = new Schema({
 
 userName : String,   
 passWord : String,
+name : String,
+phoneNumber: String,
 connected : Boolean
 });
 

@@ -1,7 +1,7 @@
 {
-  "name": "inmyarea",
+  "name": "in-my-area",
   "version": "1.0.0",
-  "description": "final project for comp science degree",
+  "description": "backend server for In My Area android app",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",

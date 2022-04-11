@@ -5,7 +5,13 @@ const businessSchema = new Schema({
 
 userName : String,   
 passWord : String,
-connected : Boolean
+connected : Boolean,
+name : String,
+ownerName: String,
+phoneNumber : String,
+description : String,
+location : String,
+category : String
 });
 
 const Business = mongoose.model('business', businessSchema);
