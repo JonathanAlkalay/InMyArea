@@ -139,7 +139,7 @@ app.get('/logOut=:email&:type', (request, response) => {
 });
 
 
-app.get('/createAccount=:email&:type', (request, response) => {
+app.post('/createAccount=:email&:type', (request, response) => {
 
     const email = request.params.email;
     const password = request.body.passWord;
@@ -155,13 +155,19 @@ app.get('/createAccount=:email&:type', (request, response) => {
                     "status": false,
                     "message": "User already exists"
                 })
-            }else
+            }else{
                 Userdb.create({ 
                                 email: email, 
                                 passWord: password,
                                 name: request.body.name,
                                 phoneNumber: request.body.phoneNumber,
-                                connected: false});    
+                                connected: false}); 
+
+                response.send({
+                    "status": true,
+                    "message": "User account successfully created"
+                })                   
+            }
 
         });
     }else if(type === 'business'){
@@ -174,7 +180,7 @@ app.get('/createAccount=:email&:type', (request, response) => {
                     "status": false,
                     "message": "Business already exists"
                 })
-            }else
+            }else{
                 Businessdb.create({ email: email, 
                                     passWord: password,
                                     name: request.body.name,
@@ -183,9 +189,14 @@ app.get('/createAccount=:email&:type', (request, response) => {
                                     description: request.body.description,
                                     location: request.body.location,
                                     category: request.body.category, 
-                                    connected: false});    
+                                    connected: false});  
+
+                response.send({
+                    "status": true,
+                    "message": "Business account successfully created"
+                })                     
+            }  
         });
-        
     }else{
         response.send({
             "status": false, 
