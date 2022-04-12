@@ -3,7 +3,7 @@ const Schema = mongoose.Schema;
 
 const businessSchema = new Schema({
 
-userName : String,   
+email : String,   
 passWord : String,
 connected : Boolean,
 name : String,

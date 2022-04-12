@@ -4,6 +4,7 @@ const cors = require('cors');
 const Businessdb = require('../schemas/business_schema');
 const Userdb = require('../schemas/user_schema');
 app.use(cors());
+app.use(express.json())
 
 const mongoose = require('mongoose');
 const e = require('cors');
@@ -16,15 +17,15 @@ mongoose.connect(mongoDB, { useNewUrlParser: true, useUnifiedTopology: true })
 
 
 
-app.get('/logIn=:userName&:passWord&:type', (request, response) => {
+app.get('/logIn=:email&:passWord&:type', (request, response) => {
 
-    const username = request.params.userName;
+    const email = request.params.email;
     const password = request.params.passWord;
     const type = request.params.type
 
 
     if(type === 'user'){
-        Userdb.findOne({ userName: username })
+        Userdb.findOne({ email: email })
             .then((usr) => {
 
                 if(usr == null){
@@ -51,7 +52,7 @@ app.get('/logIn=:userName&:passWord&:type', (request, response) => {
             });
         }
         else if (type === 'business'){
-            Businessdb.findOne({ userName: username })
+            Businessdb.findOne({ email: email })
             .then((bsns) => {
 
                 if(bsns == null){
@@ -87,13 +88,13 @@ app.get('/logIn=:userName&:passWord&:type', (request, response) => {
 });
 
 
-app.get('/logOut=:userName&:type', (request, response) => {
+app.get('/logOut=:email&:type', (request, response) => {
 
-    const userName = request.params.userName;
+    const email = request.params.email;
     const type = request.params.type;
 
     if(type === 'user'){
-    Userdb.findOne({ userName: userName })
+    Userdb.findOne({ email: email })
         .then((usr) => {
 
             if(usr != null){
@@ -111,7 +112,7 @@ app.get('/logOut=:userName&:type', (request, response) => {
             }
         });
     }else if(type === "business"){
-        Businessdb.findOne({ userName: userName })
+        Businessdb.findOne({ email: email })
         .then((bsns) => {
 
             if(bsns != null){
@@ -138,14 +139,15 @@ app.get('/logOut=:userName&:type', (request, response) => {
 });
 
 
-app.get('/createAccount=:userName&:passWord&:type', (request, response) => {
+app.get('/createAccount=:email&:type', (request, response) => {
 
-    const username = request.params.userName;
-    const password = request.params.passWord;
+    const email = request.params.email;
+    const password = request.body.passWord;
     const type = request.params.type;
 
+
     if (type === 'user'){
-    Userdb.findOne({userName: username})
+    Userdb.findOne({email: email})
         .then((usr) => {
 
             if(usr != null){
@@ -154,11 +156,17 @@ app.get('/createAccount=:userName&:passWord&:type', (request, response) => {
                     "message": "User already exists"
                 })
             }else
-                Userdb.create({ userName: username, passWord: password, connected: false});    
+                Userdb.create({ 
+                                email: email, 
+                                passWord: password,
+                                name: request.body.name,
+                                phoneNumber: request.body.phoneNumber,
+                                connected: false});    
+
         });
     }else if(type === 'business'){
 
-        Businessdb.findOne({userName: username})
+        Businessdb.findOne({email: email})
         .then((bsns) => {
 
             if(bsns != null){
@@ -167,8 +175,17 @@ app.get('/createAccount=:userName&:passWord&:type', (request, response) => {
                     "message": "Business already exists"
                 })
             }else
-                Businessdb.create({ userName: username, passWord: password, connected: false});    
+                Businessdb.create({ email: email, 
+                                    passWord: password,
+                                    name: request.body.name,
+                                    ownerName: request.body.ownerName,
+                                    phoneNumber: request.body.phoneNumber,
+                                    description: request.body.description,
+                                    location: request.body.location,
+                                    category: request.body.category, 
+                                    connected: false});    
         });
+        
     }else{
         response.send({
             "status": false, 
