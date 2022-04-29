@@ -183,9 +183,15 @@ app.post("/createAccount=:email&:type", (request, response) => {
 
 app.post("/uploadVideo/email=:email&:type", (request, response) => {
 
-//   VideoDb.create({
-   
-//   });
+  const email = request.params.email;
+  const file = request.body;
+
+  //save file to videos dir
+
+  VideoDb.create({
+    email: email,
+    filePath: filePath,
+  });
 
   response.send({
     status: true,
