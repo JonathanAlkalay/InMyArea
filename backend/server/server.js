@@ -185,12 +185,13 @@ app.post("/uploadVideo/email=:email&:type", (request, response) => {
 
   const email = request.params.email;
   const file = request.body;
+  const fs = require('fs');
 
-  //save file to videos dir
+  fs.writeFile('./videos/'+email, file);
 
   VideoDb.create({
     email: email,
-    filePath: filePath,
+    filePath: './videos/'+email,
   });
 
   response.send({
