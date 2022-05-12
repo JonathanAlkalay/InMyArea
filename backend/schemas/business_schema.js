@@ -7,11 +7,11 @@ email : String,
 passWord : String,
 connected : Boolean,
 name : String,
-ownerName: String,
 phoneNumber : String,
 description : String,
 location : String,
-category : String
+category : String,
+services : [String]
 });
 
 const Business = mongoose.model('business', businessSchema);

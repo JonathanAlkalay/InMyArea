@@ -9,6 +9,7 @@ app.use(cors());
 app.use(express.json());
 
 const mongoose = require("mongoose");
+const { response } = require("express");
 const mongoDB =
   "mongodb+srv://jonathan:Aa123654!@cluster0.2lj7x.mongodb.net/myFirstDatabase?retryWrites=true&w=majority";
 
@@ -159,10 +160,10 @@ app.post("/createAccount=:email&:type", (request, response) => {
           email: email,
           passWord: password,
           name: request.body.name,
-          ownerName: request.body.ownerName,
           phoneNumber: request.body.phoneNumber,
           description: request.body.description,
-          location: request.body.location,
+          location: null,
+          services: [],
           category: request.body.category,
           connected: false,
         });
@@ -177,6 +178,78 @@ app.post("/createAccount=:email&:type", (request, response) => {
     response.send({
       status: false,
       message: "invalid type provided",
+    });
+  }
+});
+
+app.get("/getBusiness=:email", (request, response) =>{
+
+  const email = request.params.email;
+
+  BusinessDb.findOne({ email: email }).then((bsns) => {
+    if (bsns == null) {
+      response.send({
+        status: false,
+        message: "Business does not exist",
+        account: null
+      });
+    }else{
+      response.send({
+        status: true,
+        message: "Business exists",
+        account: bsns
+      });
+    }
+  });
+});
+
+app.get("/getUser=:email", (request, response) =>{
+
+  const email = request.params.email;
+
+  UserDb.findOne({ email: email }).then((usr) => {
+    if (usr == null) {
+      response.send({
+        status: false,
+        message: "User does not exist",
+        account: null
+      });
+    }else{
+      response.send({
+        status: true,
+        message: "User exists",
+        account: usr
+      });
+    }
+  });
+});
+
+app.post("/updateAccount=:email&:type", (request, response) =>{
+  const email = request.params.email;
+  const type = request.params.type;
+  const updatedAccount = request.body;
+
+  if(updatedAccount.email !== email){
+    response.send({
+      status: false,
+      message: "sorry, not allowed to change email"
+    })
+  }else{
+
+    const db = type === 'user' ? UserDb: BusinessDb;
+
+    db.updateOne({ email: email }, updatedAccount , (err) =>{
+      if (err) {
+        response.send({
+          status: false,
+          message: "failed to update account",
+        });
+      } else {
+        response.send({
+          status: true,
+          message: "account updated successfully",
+        });
+      }
     });
   }
 });
