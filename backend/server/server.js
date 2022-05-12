@@ -182,43 +182,25 @@ app.post("/createAccount=:email&:type", (request, response) => {
   }
 });
 
-app.get("/getBusiness=:email", (request, response) =>{
+app.get("/getAccount=:email&:type", (request,response) =>{
 
   const email = request.params.email;
+  const type = request.params.type
+  
+  const db = type === 'user' ? UserDb: BusinessDb;
 
-  BusinessDb.findOne({ email: email }).then((bsns) => {
-    if (bsns == null) {
+  db.findOne({email: email}).select('-__v -_id').then(acc =>{
+    if (acc == null) {
       response.send({
         status: false,
-        message: "Business does not exist",
+        message: "Account does not exist",
         account: null
       });
     }else{
       response.send({
         status: true,
-        message: "Business exists",
-        account: bsns
-      });
-    }
-  });
-});
-
-app.get("/getUser=:email", (request, response) =>{
-
-  const email = request.params.email;
-
-  UserDb.findOne({ email: email }).then((usr) => {
-    if (usr == null) {
-      response.send({
-        status: false,
-        message: "User does not exist",
-        account: null
-      });
-    }else{
-      response.send({
-        status: true,
-        message: "User exists",
-        account: usr
+        message: "Account exists",
+        account: acc
       });
     }
   });
