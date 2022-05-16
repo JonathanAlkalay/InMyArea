@@ -9,7 +9,6 @@ app.use(cors());
 app.use(express.json());
 
 const mongoose = require("mongoose");
-const { response } = require("express");
 const mongoDB =
   "mongodb+srv://jonathan:Aa123654!@cluster0.2lj7x.mongodb.net/myFirstDatabase?retryWrites=true&w=majority";
 
@@ -17,6 +16,17 @@ mongoose
   .connect(mongoDB, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => app.listen(8080))
   .then(console.log("connected to mongo and server listening on port 8080"));
+
+const path = require('path');
+const multer = require('multer');
+const { request } = require("http");
+const { response } = require("express");
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => cb(null,path.join(__dirname, '/videos')),
+  filename: (req, file, cb) => cb(null, file.originalname)
+})
+const upload = multer({storage: storage});
+
 
 app.get("/logIn=:email&:passWord&:type", (request, response) => {
   const email = request.params.email;
@@ -235,22 +245,41 @@ app.post("/updateAccount=:email&:type", (request, response) =>{
     });
   }
 });
+ 
+app.get("/getAccountsByCategory=:category", (request, response) =>{
 
-app.post("/uploadVideo/email=:email&:type", (request, response) => {
+  const category = request.params.category;
+
+  BusinessDb.find({category: category}).select('-__v -_id').then(accnts =>{
+    if (accnts == null) {
+      response.send({
+        status: false,
+        message: "No accounts are in this category",
+        accounts: []
+      });
+    }else{
+      response.send({
+        status: true,
+        message: "Found accounts ",
+        accounts: accnts
+      });
+    }
+  });
+});
+
+app.post("/uploadVideo=:email", upload.single('video'), (request, response) => {
 
   const email = request.params.email;
-  const file = request.body;
-  const fs = require('fs');
-
-  fs.writeFile('./videos/'+email, file);
+  const fileName = request.body.fileName;
 
   VideoDb.create({
-    email: email,
-    filePath: './videos/'+email,
-  });
-
-  response.send({
-    status: true,
-    message: "Video was successfully uploaded",
+    email : email,   
+    filePath : './videos/'+fileName
+    })
+    .then(() =>{
+      response.send({
+      status: true,
+      message: "video uploaded successfully",
+    });
   });
 });
