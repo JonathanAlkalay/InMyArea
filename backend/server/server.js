@@ -267,6 +267,51 @@ app.get("/getAccountsByCategory=:category", (request, response) =>{
   });
 });
 
+app.get("/getAppointmentsByDate=:email&:date", (request, response) =>{
+
+  const {email, date}  = request.params;
+
+  BusinessDb.findOne({ email: email }).then((bsns) => {
+    if (bsns != null) {
+
+      const appointmentHits = bsns.appointments.filter(a => a.date === date)
+
+      response.send({
+        status: true,
+        appointments: appointmentHits,
+        message: "appointment added successfully",
+      });
+    } else {
+      response.send({
+        status: false,
+        message: "invalid email",
+      });
+    }
+  });
+})
+
+app.post("/addAppointment=:email", (request, response) =>{
+
+  const email = request.params.email;
+  const appointment = request.body;
+
+  BusinessDb.findOne({ email: email }).then((bsns) => {
+    if (bsns != null) {
+      bsns.appointments.push(appointment);
+      bsns.save();
+      response.send({
+        status: true,
+        message: "appointment added successfully",
+      });
+    } else {
+      response.send({
+        status: false,
+        message: "invalid email",
+      });
+    }
+  });
+})
+
 app.post("/uploadVideo=:email", upload.single('video'), (request, response) => {
 
   const email = request.params.email;
