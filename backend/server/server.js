@@ -282,7 +282,7 @@ app.get("/getAppointmentByUser=:email", (request, response) =>{
 
   const {email} = request.params;
 
-  AppointmentDb.find({email: email}).select('-__v -_id').then(appointments =>{
+  AppointmentDb.find({userId: email}).select('-__v -_id').then(appointments =>{
     if (appointments == null) {
       response.send({
         status: false,
