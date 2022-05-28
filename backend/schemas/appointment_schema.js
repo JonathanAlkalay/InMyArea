@@ -4,6 +4,7 @@ const Schema = mongoose.Schema;
 const appointmentSchema = new Schema({
 
     userId: String,
+    businessId: String,
     service: String,
     date: String,
     userName: String,
@@ -11,4 +12,6 @@ const appointmentSchema = new Schema({
     time: String,
 });
 
-module.exports = appointmentSchema;
+const Appointment = mongoose.model('appointment', appointmentSchema);
+
+module.exports = Appointment;

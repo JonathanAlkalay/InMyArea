@@ -4,6 +4,7 @@ const cors = require("cors");
 const BusinessDb = require("../schemas/business_schema");
 const UserDb = require("../schemas/user_schema");
 const VideoDb = require("../schemas/video_schema");
+const AppointmentDb = require("../schemas/appointment_schema");
 
 app.use(cors());
 app.use(express.json());
@@ -290,23 +291,34 @@ app.get("/getAppointmentsByDate=:email&:date", (request, response) =>{
   });
 })
 
-app.post("/addAppointment=:email", (request, response) =>{
+app.post("/addAppointment", (request, response) =>{
 
-  const email = request.params.email;
   const appointment = request.body;
 
-  BusinessDb.findOne({ email: email }).then((bsns) => {
-    if (bsns != null) {
-      bsns.appointments.push(appointment);
-      bsns.save();
-      response.send({
-        status: true,
-        message: "appointment added successfully",
-      });
-    } else {
+  AppointmentDb.create({...appointment})
+
+  response.send({
+    status: true,
+    message: "appointment made",
+  });
+})
+
+app.get("/getAppointmentByUser=:email", (request, response) =>{
+
+  const {email} = request.params;
+
+  AppointmentDb.find({email: email}).select('-__v -_id').then(appointments =>{
+    if (appointments == null) {
       response.send({
         status: false,
-        message: "invalid email",
+        message: "No appointments found",
+        appointments: []
+      });
+    }else{
+      response.send({
+        status: true,
+        message: `found ${appointments.length} appointments`,
+        appointments: appointments
       });
     }
   });
