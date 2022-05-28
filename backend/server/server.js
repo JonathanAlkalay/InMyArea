@@ -20,8 +20,6 @@ mongoose
 
 const path = require('path');
 const multer = require('multer');
-const { request } = require("http");
-const { response } = require("express");
 const storage = multer.diskStorage({
   destination: (req, file, cb) => cb(null,path.join(__dirname, '/videos')),
   filename: (req, file, cb) => cb(null, file.originalname)
@@ -267,29 +265,6 @@ app.get("/getAccountsByCategory=:category", (request, response) =>{
     }
   });
 });
-
-app.get("/getAppointmentsByDate=:email&:date", (request, response) =>{
-
-  const {email, date}  = request.params;
-
-  BusinessDb.findOne({ email: email }).then((bsns) => {
-    if (bsns != null) {
-
-      const appointmentHits = bsns.appointments.filter(a => a.date === date)
-
-      response.send({
-        status: true,
-        appointments: appointmentHits,
-        message: "appointment added successfully",
-      });
-    } else {
-      response.send({
-        status: false,
-        message: "invalid email",
-      });
-    }
-  });
-})
 
 app.post("/addAppointment", (request, response) =>{
 
