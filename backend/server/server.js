@@ -324,6 +324,30 @@ app.get("/getAppointmentByUser=:email", (request, response) =>{
   });
 })
 
+app.get("/getAppointmentsByDate=:email&:date", (request, response) =>{
+
+  const {email, date}  = request.params;
+
+  AppointmentDb.find({ businessId: email }).then((appointments) => {
+    if (appointments != null) {
+
+      const appointmentHits = appointments.filter(a => a.date === date)
+
+      response.send({
+        status: true,
+        appointments: appointmentHits,
+        message: `found ${appointments.length} appointments`,
+      });
+    } else {
+      response.send({
+        status: false,
+        appointments: [],
+        message: "no appointments found",
+      });
+    }
+  });
+})
+
 app.post("/uploadVideo=:email", upload.single('video'), (request, response) => {
 
   const email = request.params.email;
