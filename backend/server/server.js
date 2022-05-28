@@ -11,7 +11,7 @@ app.use(express.json());
 
 const mongoose = require("mongoose");
 const mongoDB =
-  "mongodb+srv://jonathan:Aa123654!@cluster0.2lj7x.mongodb.net/myFirstDatabase?retryWrites=true&w=majority";
+"mongodb+srv://luay:wdLXjKCx8moCVHWW@cluster0.gsiom.mongodb.net/?retryWrites=true&w=majority";
 
 mongoose
   .connect(mongoDB, { useNewUrlParser: true, useUnifiedTopology: true })
