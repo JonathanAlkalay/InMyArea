@@ -311,7 +311,7 @@ app.get("/getAppointmentsByDate=:email&:date", (request, response) =>{
       response.send({
         status: true,
         appointments: appointmentHits,
-        message: `found ${appointments.length} appointments`,
+        message: `found ${appointmentHits.length} appointments`,
       });
     } else {
       response.send({
