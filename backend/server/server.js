@@ -20,6 +20,7 @@ mongoose
 
 const path = require('path');
 const multer = require('multer');
+const { response } = require("express");
 const storage = multer.diskStorage({
   destination: (req, file, cb) => cb(null,path.join(__dirname, '/videos')),
   filename: (req, file, cb) => cb(null, file.originalname)
@@ -266,6 +267,25 @@ app.get("/getAccountsByCategory=:category", (request, response) =>{
   });
 });
 
+app.get("/getAccountsByLocation", (request, response) =>{
+
+  const {location} = request.params;
+  const calcDistance = require("../utils");
+
+  const {long, lat} = request.body;
+
+  await BusinessDb.find({}).then(accnts =>{
+
+    const nearByBusinesses = accnts.filter(acc => calcDistance(lat, long, acc.lat, acc.long) <= 1);
+
+    response.send({
+      status: true,
+      message: `found ${nearByBusinesses.length} accounts near`,
+      accounts: nearByBusinesses
+    })
+  });
+})
+
 app.post("/addAppointment", (request, response) =>{
 
   const appointment = request.body;
@@ -339,3 +359,4 @@ app.post("/uploadVideo=:email", upload.single('video'), (request, response) => {
     });
   });
 });
+
