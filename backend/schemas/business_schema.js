@@ -12,6 +12,8 @@ description : String,
 location : String,
 category : String,
 services : [String],
+longitude: Number,
+latitude: Number
 });
 
 const Business = mongoose.model('business', businessSchema);

@@ -20,7 +20,6 @@ mongoose
 
 const path = require('path');
 const multer = require('multer');
-const { request } = require("http");
 const { response } = require("express");
 const storage = multer.diskStorage({
   destination: (req, file, cb) => cb(null,path.join(__dirname, '/videos')),
@@ -173,10 +172,12 @@ app.post("/createAccount=:email&:type", (request, response) => {
           name: request.body.name,
           phoneNumber: request.body.phoneNumber,
           description: request.body.description,
-          location: null,
+          location: request.body.location,
           services: [],
           category: request.body.category,
           connected: false,
+          longitude: request.body.longitude,
+          latitude: request.body.latitude
         });
 
         response.send({
@@ -268,26 +269,22 @@ app.get("/getAccountsByCategory=:category", (request, response) =>{
   });
 });
 
-app.get("/getAppointmentsByDate=:email&:date", (request, response) =>{
+app.get("/getAccountsByLocation", (request, response) =>{
 
-  const {email, date}  = request.params;
+  const {location} = request.params;
+  const calcDistance = require("../utils");
 
-  BusinessDb.findOne({ email: email }).then((bsns) => {
-    if (bsns != null) {
+  const {long, lat} = request.body;
 
-      const appointmentHits = bsns.appointments.filter(a => a.date === date)
+  await BusinessDb.find({}).then(accnts =>{
 
-      response.send({
-        status: true,
-        appointments: appointmentHits,
-        message: "appointment added successfully",
-      });
-    } else {
-      response.send({
-        status: false,
-        message: "invalid email",
-      });
-    }
+    const nearByBusinesses = accnts.filter(acc => calcDistance(lat, long, acc.latitude, acc.longitude) <= 1);
+  
+    response.send({
+      status: true,
+      message: `found ${nearByBusinesses.length} accounts near`,
+      accounts: nearByBusinesses
+    })
   });
 })
 
@@ -307,7 +304,7 @@ app.get("/getAppointmentByUser=:email", (request, response) =>{
 
   const {email} = request.params;
 
-  AppointmentDb.find({email: email}).select('-__v -_id').then(appointments =>{
+  AppointmentDb.find({userId: email}).select('-__v -_id').then(appointments =>{
     if (appointments == null) {
       response.send({
         status: false,
@@ -336,7 +333,7 @@ app.get("/getAppointmentsByDate=:email&:date", (request, response) =>{
       response.send({
         status: true,
         appointments: appointmentHits,
-        message: `found ${appointments.length} appointments`,
+        message: `found ${appointmentHits.length} appointments`,
       });
     } else {
       response.send({
@@ -364,3 +361,4 @@ app.post("/uploadVideo=:email", upload.single('video'), (request, response) => {
     });
   });
 });
+
