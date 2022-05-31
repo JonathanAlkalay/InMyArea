@@ -171,7 +171,7 @@ app.post("/createAccount=:email&:type", (request, response) => {
           name: request.body.name,
           phoneNumber: request.body.phoneNumber,
           description: request.body.description,
-          location: null,
+          location: request.body.location,
           services: [],
           category: request.body.category,
           connected: false,
