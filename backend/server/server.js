@@ -271,7 +271,6 @@ app.get("/getAccountsByCategory=:category", (request, response) =>{
 
 app.get("/getAccountsByLocation=:long&:lat", (request, response) =>{
 
-  const {location} = request.params;
   const calcDistance = require("../utils");
 
   const {long, lat} = request.params;
