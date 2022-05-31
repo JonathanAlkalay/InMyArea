@@ -269,16 +269,15 @@ app.get("/getAccountsByCategory=:category", (request, response) =>{
   });
 });
 
-app.get("/getAccountsByLocation", (request, response) =>{
+app.get("/getAccountsByLocation=:long&:lat", (request, response) =>{
 
-  const {location} = request.params;
   const calcDistance = require("../utils");
 
-  const {long, lat} = request.body;
+  const {long, lat} = request.params;
 
-  await BusinessDb.find({}).then(accnts =>{
+  BusinessDb.find({}).then(accnts =>{
 
-    const nearByBusinesses = accnts.filter(acc => calcDistance(lat, long, acc.latitude, acc.longitude) <= 1);
+    const nearByBusinesses = accnts.filter(acc => calcDistance(lat, long, acc.latitude, acc.longitude) <= 5);
   
     response.send({
       status: true,
