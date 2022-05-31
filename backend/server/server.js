@@ -275,7 +275,7 @@ app.get("/getAccountsByLocation=:long&:lat", (request, response) =>{
 
   const {long, lat} = request.params;
 
-  await BusinessDb.find({}).then(accnts =>{
+  BusinessDb.find({}).then(accnts =>{
 
     const nearByBusinesses = accnts.filter(acc => calcDistance(lat, long, acc.latitude, acc.longitude) <= 1);
   
