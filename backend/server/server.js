@@ -176,6 +176,8 @@ app.post("/createAccount=:email&:type", (request, response) => {
           services: [],
           category: request.body.category,
           connected: false,
+          longitude: request.body.longitude,
+          latitude: request.body.latitude
         });
 
         response.send({
@@ -276,8 +278,8 @@ app.get("/getAccountsByLocation", (request, response) =>{
 
   await BusinessDb.find({}).then(accnts =>{
 
-    const nearByBusinesses = accnts.filter(acc => calcDistance(lat, long, acc.lat, acc.long) <= 1);
-
+    const nearByBusinesses = accnts.filter(acc => calcDistance(lat, long, acc.latitude, acc.longitude) <= 1);
+  
     response.send({
       status: true,
       message: `found ${nearByBusinesses.length} accounts near`,
