@@ -444,3 +444,21 @@ app.get("/getVideoPath=:email", (request, response) =>{
     }
   })
 })
+
+app.post("/updateVideoPath", (request, response) =>{
+
+  const updatedVideo = request.body
+  VideoDb.updateOne({email: email}, updatedVideo, err =>{
+    if(err){
+      response.send({
+        status: false,
+        message: "failed to update path"
+      })
+    }else{
+      response.send({
+        status: true,
+        message: "saved new path"
+      })
+    }
+  })
+})
