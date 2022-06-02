@@ -435,7 +435,7 @@ app.post("/saveVideoPath=:email&:path", (request, response) =>{
 });
 
 app.get("/getVideoPath=:email", (request, response) =>{
-  VideoDb.find({email: request.params.email}).then(({path}) =>{
+  VideoDb.find({email: request.params.email}).select('-__v -_id').then(path =>{
 
     if(path == null){
       response.send({
@@ -447,7 +447,7 @@ app.get("/getVideoPath=:email", (request, response) =>{
       response.send({
         status: true,
         message: "found path",
-        path: path
+        path: path.filePath
       })
     }
   })
