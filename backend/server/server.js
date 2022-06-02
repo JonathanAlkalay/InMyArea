@@ -446,7 +446,7 @@ app.get("/getVideoPath=:email", (request, response) =>{
     }else{
       response.send({
         status: true,
-        message: "video does not exist for this email",
+        message: "found path",
         path: path
       })
     }
