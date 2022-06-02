@@ -20,7 +20,6 @@ mongoose
 
 const path = require('path');
 const multer = require('multer');
-const { response } = require("express");
 const storage = multer.diskStorage({
   destination: (req, file, cb) => cb(null,path.join(__dirname, '/videos')),
   filename: (req, file, cb) => cb(null, file.originalname)
@@ -291,12 +290,22 @@ app.post("/addAppointment", (request, response) =>{
 
   const appointment = request.body;
 
-  AppointmentDb.create({...appointment})
+  AppointmentDb.find({businessId: businessEmail, date: date, time: time}).then(app =>{
+    if(app == null){
 
-  response.send({
-    status: true,
-    message: "appointment made",
-  });
+      AppointmentDb.create({...appointment}).then(() =>{
+        response.send({
+          status: true,
+          message: "appointment made",
+        });
+      })
+    }else{
+      response.send({
+        status: false,
+        message: "time not available",
+      });
+    }
+  })
 })
 
 app.post("/editAppointment=:userEmail&:businessEmail&:date&:time", (request, response) =>{
@@ -402,3 +411,36 @@ app.post("/uploadVideo=:email", upload.single('video'), (request, response) => {
   });
 });
 
+app.post("/saveVideoPath=:email&:path", (request, response) =>{
+
+  const {email, path} = request.params;
+
+  VideoDb.create({
+    email : email,   
+    filePath : path
+  }).then(() =>{
+    response.send({
+      status: true,
+      message: "video saved",
+    })
+  })
+});
+
+app.get("/getVideoPath=:email", (request, response) =>{
+  VideoDb.find({email: request.params.email}).select('-__v -_id').then(path =>{
+
+    if(path == null){
+      response.send({
+        status: false,
+        message: "video does not exist for this email",
+        path: null
+      })
+    }else{
+      response.send({
+        status: true,
+        message: "video does not exist for this email",
+        path: path
+      })
+    }
+  })
+})
