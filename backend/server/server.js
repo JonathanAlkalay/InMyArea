@@ -330,22 +330,30 @@ app.post("/editAppointment=:userEmail&:businessEmail&:date&:time", (request, res
     }
   })
 }else{
-  AppointmentDb.updateOne({userId: userEmail, businessId: businessEmail, date: date, time: time}, appointment).then((obj) =>{
+  AppointmentDb.find({businessId: businessEmail, date: date, time: time}).then(app =>{
+    if(app == null){
 
-    if(obj.matchedCount > 0){
-
-      response.send({
-        status: true,
-        message: "appointment updated",
-      })
+      AppointmentDb.updateOne({userId: userEmail, businessId: businessEmail, date: date, time: time}, appointment).then((obj) =>{
+        if(obj.matchedCount > 0){
+    
+          response.send({
+            status: true,
+            message: "appointment updated",
+          })
+        }else{
+          response.send({
+            status: false,
+            message: "no appointments found",
+          })
+        }
+    })
     }else{
       response.send({
         status: false,
-        message: "no appointments found",
-      })
+        message: "time not available",
+      });
     }
-    
-})
+  })
 }
 })
 
