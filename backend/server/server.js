@@ -289,6 +289,8 @@ app.get("/getAccountsByLocation=:long&:lat", (request, response) =>{
 app.post("/addAppointment", (request, response) =>{
 
   const appointment = request.body;
+  const {businessEmail, date, time} = appointment;
+
 
   AppointmentDb.findOne({businessId: businessEmail, date: date, time: time}).then(app =>{
     if(app == null){
