@@ -312,11 +312,11 @@ app.post("/addAppointment", (request, response) =>{
 
 app.post("/editAppointment=:userEmail&:businessEmail&:date&:time", (request, response) =>{
 
- const {userId, businessId, date, time} = request.params;
+ const {userEmail, businessEmail, date, time} = request.params;
  const appointment = request.body;
 
  if (Object.keys(appointment).length == 0){
-   AppointmentDb.deleteOne({userId: userId, businessId: businessId, date: date, time: time}).then((obj) =>{
+   AppointmentDb.deleteOne({userId: userEmail, businessId: businessEmail, date: date, time: time}).then((obj) =>{
 
     if(obj.matchedCount > 0){
 
@@ -332,10 +332,10 @@ app.post("/editAppointment=:userEmail&:businessEmail&:date&:time", (request, res
     }
   })
 }else{
-  AppointmentDb.findOne({businessId: businessId, date: date, time: time}).then(app =>{
+  AppointmentDb.findOne({businessId: businessEmail, date: appointment.date, time: appointment.time}).then(app =>{
     if(app == null){
 
-      AppointmentDb.updateOne({userId: userId, businessId: businessId, date: date, time: time}, appointment).then((obj) =>{
+      AppointmentDb.updateOne({userId: userEmail, businessId: businessEmail, date: date, time: time}, appointment).then((obj) =>{
         if(obj.matchedCount > 0){
     
           response.send({
