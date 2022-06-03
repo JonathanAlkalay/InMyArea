@@ -290,7 +290,7 @@ app.post("/addAppointment", (request, response) =>{
 
   const appointment = request.body;
 
-  AppointmentDb.find({businessId: businessEmail, date: date, time: time}).then(app =>{
+  AppointmentDb.findOne({businessId: businessEmail, date: date, time: time}).then(app =>{
     if(app == null){
 
       AppointmentDb.create({...appointment}).then(() =>{
@@ -330,7 +330,7 @@ app.post("/editAppointment=:userEmail&:businessEmail&:date&:time", (request, res
     }
   })
 }else{
-  AppointmentDb.find({businessId: businessEmail, date: date, time: time}).then(app =>{
+  AppointmentDb.findOne({businessId: businessEmail, date: date, time: time}).then(app =>{
     if(app == null){
 
       AppointmentDb.updateOne({userId: userEmail, businessId: businessEmail, date: date, time: time}, appointment).then((obj) =>{
