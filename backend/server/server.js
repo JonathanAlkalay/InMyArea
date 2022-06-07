@@ -456,10 +456,10 @@ app.get("/getVideoPath=:email", (request, response) =>{
   })
 })
 
-app.post("/updateVideoPath", (request, response) =>{
+app.post("/updateVideoPath=:email&:path", (request, response) =>{
 
-  const updatedVideo = request.body
-  VideoDb.updateOne({email: email}, updatedVideo, err =>{
+  const {email, path} = request.params
+  VideoDb.updateOne({email: email}, {...request.params}, err =>{
     if(err){
       response.send({
         status: false,
