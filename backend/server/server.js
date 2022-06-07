@@ -176,7 +176,8 @@ app.post("/createAccount=:email&:type", (request, response) => {
           category: request.body.category,
           connected: false,
           longitude: request.body.longitude,
-          latitude: request.body.latitude
+          latitude: request.body.latitude,
+          businessHours: {}
         });
 
         response.send({
@@ -191,6 +192,24 @@ app.post("/createAccount=:email&:type", (request, response) => {
       message: "invalid type provided",
     });
   }
+});
+
+app.post("/updateBusinessHours=:email", (request, response) =>{
+
+  BusinessDb.updateOne({email: request.params.email}, {businessHours: request.body}).then(err =>{
+    if(err){
+
+    response.send({
+      status: false,
+      message: "failed to update"
+    })
+    }else{
+      response.send({
+        status: true,
+        message: "updated path successfully"
+      })
+    }
+  })
 });
 
 app.get("/getAccount=:email&:type", (request,response) =>{

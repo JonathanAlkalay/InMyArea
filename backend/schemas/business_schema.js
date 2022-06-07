@@ -13,7 +13,8 @@ location : String,
 category : String,
 services : [String],
 longitude: Number,
-latitude: Number
+latitude: Number,
+businessHours: Map,
 });
 
 const Business = mongoose.model('business', businessSchema);
