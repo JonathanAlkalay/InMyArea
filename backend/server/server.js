@@ -492,3 +492,6 @@ app.post("/updateVideoPath=:email&:path", (request, response) =>{
     }
   })
 })
+
+
+module.exports = app;
